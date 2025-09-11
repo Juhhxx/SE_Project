@@ -1,5 +1,7 @@
 #include "WiFi.h"
-#include "AsyncUDP.h"
+#include <AsyncUDP.h>
+#include <WiFiAP.h>
+
 #include <MD_MAX72xx.h>
 
 #define PRINT(s, x) { Serial.print(F(s)); Serial.print(x); }
@@ -13,47 +15,39 @@
 #define DATA_PIN  23  // or MOSI
 #define CS_PIN    13  // or SS
 
+WiFiServer server(80);
+
+AsyncUDP udp;
+
 // SPI hardware interface
 MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 // We always wait a bit between updates of the display
 #define  DELAYTIME  100  // in milliseconds
 
-const char *ssid = "Redmi 10A";
+const char *ssid = "ESP32_GHOST";
 const char *password = "12345678";
 
-void draw(uint8_t bitmap[8])
-{
-  mx.clear();
+void startServer() {
+  Serial.println("Starting Server");
+  // You can remove the password parameter if you want the AP to be open.
+  // a valid password must have more than 7 characters
+  if (!WiFi.softAP(ssid, password)) {
+    log_e("Soft AP creation failed.");
+    while (1);
+  }
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(myIP);
+  server.begin();
 
-  // use the bitmap
-  mx.control(MD_MAX72XX::UPDATE, MD_MAX72XX::OFF);
-  mx.setBuffer(7, COL_SIZE, bitmap);
-  mx.control(MD_MAX72XX::UPDATE, MD_MAX72XX::ON);
-  delay(DELAYTIME);
+  Serial.println("Server started");
 }
 
-AsyncUDP udp;
-
-void setup() {
-
-  Serial.begin(115200);
-
-  if (!mx.begin())
-    PRINTS("\nMD_MAX72XX initialization failed");
-
-  
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("WiFi Failed");
-    while (1) {
-      delay(1000);
-    }
-  }
+void initializeUDP() {
   if (udp.listen(1234)) {
     Serial.print("UDP Listening on IP: ");
-    Serial.println(WiFi.localIP());
+    Serial.println(WiFi.softAPIP());
     udp.onPacket([](AsyncUDPPacket packet) {
       Serial.print("UDP Packet Type: ");
       Serial.print(packet.isBroadcast() ? "Broadcast" : packet.isMulticast() ? "Multicast" : "Unicast");
@@ -82,22 +76,36 @@ void setup() {
   }
 }
 
+void draw(uint8_t bitmap[8]) {
+  mx.clear();
+
+  // use the bitmap
+  mx.control(MD_MAX72XX::UPDATE, MD_MAX72XX::OFF);
+  mx.setBuffer(7, COL_SIZE, bitmap);
+  mx.control(MD_MAX72XX::UPDATE, MD_MAX72XX::ON);
+  delay(DELAYTIME);
+}
+
+void setup() {
+
+  Serial.begin(115200);
+  delay(1000);
+
+  Serial.println("start");
+
+  startServer();
+
+  initializeUDP();
+
+  if (!mx.begin())
+    PRINTS("\nMD_MAX72XX initialization failed");
+  
+}
+
 void loop() {
 
   delay(1000);
   //Send broadcast
-  udp.broadcast("Anyone here?");
-
-  uint8_t arrow[COL_SIZE] =
-  {
-    0b11111111,
-    0b00011100,
-    0b00111110,
-    0b01111111,
-    0b00011100,
-    0b00011100,
-    0b00111110,
-    0b00111100
-  };
+  // udp.broadcast("Anyone here?");
 
 }
