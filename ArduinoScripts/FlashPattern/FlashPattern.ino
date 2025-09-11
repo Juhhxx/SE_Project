@@ -6,8 +6,10 @@ const int button1Pin = 14;
 const int button2Pin = 27;
 const int button3Pin = 26;
 const int button4Pin = 25;
+const int triggerPin = 32;
 
-int flashMode;  // Variable to track mode
+
+uint8_t flashMode;  // Variable to track mode
 
 CRGB leds[NUM_LEDS];
 
@@ -21,29 +23,35 @@ void setup () {
   pinMode(button2Pin, INPUT_PULLUP);
   pinMode(button3Pin, INPUT_PULLUP);
   pinMode(button4Pin, INPUT_PULLUP);
+
+  pinMode(triggerPin, INPUT_PULLUP);
  }
 
 void loop () {
   flashMode = ModeDetection();
 
-   QuickFlash(flashMode);
-   QuickFlash(flashMode);
-   SlowFlash(flashMode);
-   delay(1000);
+  if (digitalRead(triggerPin) == LOW) //Trigger button is read here
+  {
+    //FLASH ITSELF
+    QuickFlash(flashMode);
+    QuickFlash(flashMode);
+    SlowFlash(flashMode);
+    delay(1000);
+  }
 
 
-   Serial.println("Mode: ");
-   Serial.print(flashMode);
-   Serial.println("");
+  //  Serial.println("Mode: ");
+  //  Serial.print(flashMode);
+  //  Serial.println("");
 
-  Serial.print("B1: "); Serial.print(digitalRead(button1Pin));
-  Serial.print("  B2: "); Serial.print(digitalRead(button2Pin));
-  Serial.print("  B3: "); Serial.print(digitalRead(button3Pin));
-  Serial.print("  B4: "); Serial.println(digitalRead(button4Pin));
-  delay(200);
+  // Serial.print("B1: "); Serial.print(digitalRead(button1Pin));
+  // Serial.print("  B2: "); Serial.print(digitalRead(button2Pin));
+  // Serial.print("  B3: "); Serial.print(digitalRead(button3Pin));
+  // Serial.print("  B4: "); Serial.println(digitalRead(button4Pin));
+  // delay(200);
     
 }
-void QuickFlash(int mode)
+void QuickFlash(uint8_t mode)
 {
   // Quick burst of bright white
   if (mode == -2){
@@ -80,7 +88,7 @@ void QuickFlash(int mode)
   FastLED.show();
 }
 
-void SlowFlash(int mode)
+void SlowFlash(uint8_t mode)
 {
   // Quick burst of bright white
   if (mode == -2){
@@ -114,8 +122,19 @@ void SlowFlash(int mode)
   FastLED.clear();
   FastLED.show();
 }
-
-int ModeDetection()
+int Trigger(uint8_t trigger)
+{
+  if (trigger == 1)
+  {
+    QuickFlash(flashMode);
+    QuickFlash(flashMode);
+    SlowFlash(flashMode);
+    delay(1000);
+    trigger = 0;
+    return trigger;
+  }
+}
+uint8_t ModeDetection()
 {
   if (digitalRead(button1Pin) == LOW) {
     return -1;
