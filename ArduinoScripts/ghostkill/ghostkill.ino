@@ -106,6 +106,6 @@ void loop() {
 
   delay(1000);
   //Send broadcast
-  // udp.broadcast("Anyone here?");
+  udp.broadcast("Anyone here?");
 
 }
