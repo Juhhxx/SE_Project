@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         dir.z = dir.y;
         dir.y = 0;
 
-        float dist = Random.Range(_spawningRangeRadius.x, _spawningRangeRadius.y);
+        float dist = _spawningRangeRadius.x + Random.Range(0, _spawningRangeRadius.y - _spawningRangeRadius.x);
 
         return dir * dist;
     }

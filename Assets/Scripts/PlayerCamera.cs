@@ -28,7 +28,6 @@ public class PlayerCamera : MonoBehaviour
                 if (ghost != null)
                 {
                     Destroy(ghost.gameObject);
-                    break;
                 }
             }
 

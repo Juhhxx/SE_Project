@@ -393,7 +393,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &777814423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,6 +408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ipAdress: 192.168.4.1
   _port: 1234
+  _refreshRate: 0.5
 --- !u!4 &777814424
 Transform:
   m_ObjectHideFlags: 0
@@ -493,7 +494,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &926902141
 CapsuleCollider:
   m_ObjectHideFlags: 0

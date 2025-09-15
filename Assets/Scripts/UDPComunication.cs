@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -13,12 +14,12 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
     [SerializeField] private float _refreshRate;
 
     IPAddress _adress;
-    Socket _sender;
+    UdpClient _udpClient;
     IPEndPoint _endpoint;
 
     Timer _timer;
 
-    private void Start()
+    private void Awake()
     {
         base.SingletonCheck(this);
 
@@ -27,65 +28,68 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
 
     private void OnEnable()
     {
-        CreateSocket();
+        CreateUDPClient();
 
-        // _timer.OnTimerDone += RecieveMessage;
+        _timer.OnTimerDone += () => _ = RecieveMessage();
     }
     private void OnDisable()
     {
-        DisconnectSocket();
+        DisconnectUDPClient();
 
-        // _timer.OnTimerDone -= RecieveMessage;
+        _timer.OnTimerDone -= () => _ = RecieveMessage();
     }
 
-    private void CreateSocket()
+    private void CreateUDPClient()
     {
         _adress = IPAddress.Parse(_ipAdress);
 
-        _sender = new Socket(_adress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+        _udpClient = new UdpClient(_port);
+        _udpClient.EnableBroadcast = true;
 
         _endpoint = new IPEndPoint(_adress, _port);
 
+        // try
+        // {
+        //     _udpClient.Connect(_endpoint);
+        // }
+        // catch (SocketException e)
+        // {
+        //     // In case of error, just write it
+        //     Debug.Log($"Error Connecting to Adress {_adress}. SocketException : {e}");
+        // }
+    }
+    private void DisconnectUDPClient()
+    {
+        _udpClient?.Close();
+        _udpClient = null;
+    }
+
+    public async Task RecieveMessage()
+    {
+        if (_udpClient == null) return;
+
         try
         {
-            _sender.Connect(_endpoint);
+            UdpReceiveResult result = await _udpClient.ReceiveAsync();
+            byte[] data = result.Buffer;
+
+            string msg = Encoding.ASCII.GetString(data);
+            Debug.Log($"Received {data.Length} bytes from {result.RemoteEndPoint}: {msg}");
         }
-        catch (SocketException e)
+        catch (Exception e)
         {
-            // In case of error, just write it
-            Debug.Log($"SocketException : {e}");
+            Debug.LogError($"UDP Receive Exception: {e.Message}");
         }
-    }
-    private void DisconnectSocket()
-    {
-        // Shutdown the socket (sends a termination signal, so the
-        // other side knows we're terminating the connection)
-        _sender.Shutdown(SocketShutdown.Both);
-        // Closes the socket
-        _sender.Close();
-    }
-
-    public void RecieveMessage()
-    {
-        if (!_sender.Connected) return;
-
-        byte[] bytes = new byte[8 * 1024 * 1024];
-        int bytesRec = _sender.Receive(bytes);
-
-        Debug.Log($"Recived Message");
     }
     public void SendMessage(byte[] message)
     {
-        if (!_sender.Connected) return;
+        if (_udpClient == null) return;
 
         try
         {
-            int bytesSent = _sender.Send(message);
+            int bytesSent = _udpClient.Send(message, message.Length, _ipAdress, _port);
 
             Debug.Log($"Sent Message");
-
-            RecieveMessage();
-
         }
         catch (SocketException e)
         {
@@ -96,11 +100,9 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
 
     private void Update()
     {
-        // SendMessage(new byte[] { 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA });
-        // Thread.Sleep(1000);
-        // SendMessage(new byte[] { 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 });
-        // Thread.Sleep(1000);
-
-        if (Input.GetKeyDown(KeyCode.R)) RecieveMessage();
+        SendMessage(new byte[] { 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA });
+        Thread.Sleep(1000);
+        SendMessage(new byte[] { 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 });
+        Thread.Sleep(1000);
     }
 }
