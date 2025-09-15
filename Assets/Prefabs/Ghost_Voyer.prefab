@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1853595590159853410}
   - component: {fileID: 4825737118674580165}
   - component: {fileID: 2428465360043923779}
-  - component: {fileID: 6575398689409794639}
+  - component: {fileID: 4206392694558641687}
   m_Layer: 0
-  m_Name: Ghost_Standard
+  m_Name: Ghost_Voyer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b1e10498353e46645adf92064eb642df, type: 2}
+  - {fileID: 2100000, guid: e9a12a8b7943f0d479fa03447206d725, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,7 +109,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6575398689409794639
+--- !u!114 &4206392694558641687
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,5 +126,5 @@ MonoBehaviour:
   audioClips: []
   audioPlayProb: 0
   audioCooldown: 0
-  _speed: 0.5
-  _class: 1
+  _speed: 0
+  _class: 4
