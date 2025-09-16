@@ -36,6 +36,7 @@ public class StalkerBehaviour : MonoBehaviour
     void Update()
     {
         Behaviour(_class);
+        timer?.CountTimer();
     }
 
     private void OnEnable()

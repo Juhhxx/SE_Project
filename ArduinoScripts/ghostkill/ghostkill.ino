@@ -13,7 +13,7 @@
 
 #define CLK_PIN   18 // or SCK
 #define DATA_PIN  23  // or MOSI
-#define CS_PIN    13  // or SS
+#define CS_PIN    19  // or SS
 
 WiFiServer server(80);
 
@@ -25,7 +25,7 @@ MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 // We always wait a bit between updates of the display
 #define  DELAYTIME  100  // in milliseconds
 
-const char *ssid = "ESP32_GHOST";
+const char *ssid = "ESP32_GHOST_2";
 const char *password = "12345678";
 
 void startServer() {
