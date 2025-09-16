@@ -1,10 +1,13 @@
 using System.Collections;
+using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _ghostPrefab;
+    // Antigo serialized field de qnd tinhamos apenas um tipo de fantasma
+    //[SerializeField] private GameObject _ghostPrefab; 
+    [SerializeField] private List<GameObject> _ghostPrefabs = new List<GameObject>();
 
     [SerializeField][MinMaxSlider(5, 100)] private Vector2 _spawningRangeRadius;
     [SerializeField][MinMaxSlider(1, 10)] private Vector2 _spawningRangeTime;
@@ -26,7 +29,7 @@ public class GameManager : MonoBehaviour
 
             Vector3 pos = ChooseLocation();
 
-            Instantiate(_ghostPrefab, pos, Quaternion.identity);
+            Instantiate(_ghostPrefabs[Random.Range(0,_ghostPrefabs.Count)], pos, Quaternion.identity);
 
             Debug.Log($"SPAWNED GHOST AT {pos}");
         }

@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1853595590159853410}
   - component: {fileID: 4825737118674580165}
   - component: {fileID: 2428465360043923779}
-  - component: {fileID: 1068040502576746226}
+  - component: {fileID: 6575398689409794639}
   m_Layer: 0
-  m_Name: Ghost
+  m_Name: Ghost_Standard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,7 +109,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1068040502576746226
+--- !u!114 &6575398689409794639
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,7 +118,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8568364890420827893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6ca9e64c092452449433e552e9de700, type: 3}
+  m_Script: {fileID: 11500000, guid: 6faee5722756cdb40a2b8a35fc90ce50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDetectable: 0
+  isAudible: 0
+  audioClips: []
+  audioPlayProb: 0
+  audioCooldown: 0
   _speed: 0.5
+  _class: 1
