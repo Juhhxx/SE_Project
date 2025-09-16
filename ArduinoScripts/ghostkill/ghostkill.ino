@@ -13,7 +13,7 @@
 Adafruit_BMP280 bme; // I2C
 MPU9250_asukiaaa mySensor;
 
-float gZ;
+int gZ;
 uint8_t processedgZ;
 uint8_t directRot;
 
@@ -46,17 +46,8 @@ void processGyroSignal() {
 
     if (gZ > 20) {
       // Scale gZ into 0–255 range (assuming max meaningful = 500 deg/s)
-      if (gZ > 500) gZ = 500;
-      processedgZ = (uint8_t) map((long) gZ, 0, 180, 0, 255);
-
-      // Print raw + processed values
-      Serial.print("\tgyroZ: ");
-      Serial.print(gZ);
-      Serial.print("  |  Direção: ");
-      Serial.print(directRot);
-      Serial.print("  |  Processed: ");
-      Serial.print(processedgZ);
-      Serial.println();
+      if (gZ > 360) gZ = 360;
+      processedgZ = (uint8_t) map((long) gZ, 0, 360, 0, 180);
     }
     else
     {
@@ -71,13 +62,12 @@ void processGyroSignal() {
 
 #define HARDWARE_TYPE MD_MAX72XX::PAROLA_HW
 #define MAX_DEVICES	1
-
-// SPI hardware interface
-MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
-
 #define CLK_PIN   18 // or SCK
 #define DATA_PIN  23  // or MOSI
 #define CS_PIN    13  // or SS
+
+// SPI hardware interface
+MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 WiFiServer server(80);
 
@@ -165,8 +155,15 @@ void setup() {
 
 void loop() {
 
-  delay(1000);
-  //Send broadcast
+  delay(500);
   processGyroSignal();
+  // Print raw + processed values
+  Serial.print("\tgyroZ: ");
+  Serial.print(gZ);
+  Serial.print("  |  Direção: ");
+  Serial.print(directRot);
+  Serial.print("  |  Processed: ");
+  Serial.print(processedgZ);
+  Serial.println();
 
 }
