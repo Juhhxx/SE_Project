@@ -29,7 +29,11 @@ public class GameManager : MonoBehaviour
 
             Vector3 pos = ChooseLocation();
 
-            Instantiate(_ghostPrefabs[Random.Range(0,_ghostPrefabs.Count)], pos, Quaternion.identity);
+            int gType = Random.Range(0, _ghostPrefabs.Count);
+
+            GameObject g = Instantiate(_ghostPrefabs[gType], pos, Quaternion.identity);
+
+            GhostIndicator.Instance.AddGhost(g.transform);
 
             Debug.Log($"SPAWNED GHOST AT {pos}");
         }

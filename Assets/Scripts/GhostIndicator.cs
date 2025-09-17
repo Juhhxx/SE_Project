@@ -1,25 +1,98 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class GhostIndicator : MonoBehaviour
+public class GhostIndicator : MonoBehaviourSingleton<GhostIndicator>
 {
-    [SerializeField] private Transform player;
-    [SerializeField] private List<Transform> ghosts;
+    [SerializeField] private Transform _player;
+    [SerializeField] private List<Transform> _ghosts;
+    [SerializeField] private int _channel;
+
+    public void AddGhost(Transform ghost) => _ghosts.Add(ghost);
+    public void RemoveGhost(Transform ghost) => _ghosts.Remove(ghost);
+    public void SetChannel(int channel) => _channel = channel;
+
+    private byte[] _arrowUp = new byte[8]
+    {
+        0b00000000,
+        0b00011000,
+        0b00111100,
+        0b01111110,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b00000000
+    };
+
+    private byte[] _arrowDown = new byte[8]
+    {
+        0b00000000,
+        0b00011000,
+        0b00011000,
+        0b00011000,
+        0b01111110,
+        0b00111100,
+        0b00011000,
+        0b00000000
+    };
+
+    private byte[] _arrowRight = new byte[8]
+    {
+        0b00000000,
+        0b00001000,
+        0b00001100,
+        0b01111110,
+        0b01111110,
+        0b00101100,
+        0b00001000,
+        0b00000000
+    };
+
+    private byte[] _arrowLeft = new byte[8]
+    {
+        0b00000000,
+        0b00010000,
+        0b00110000,
+        0b01111110,
+        0b01111110,
+        0b00110000,
+        0b00010000,
+        0b00000000
+    };
+
+    Timer _timer;
+
+    private void Awake()
+    {
+        base.SingletonCheck(this);
+    }
+    private void Start()
+    {
+        // UDPComunication.Instance.SendMessage(_arrowUp);
+
+        _timer = new Timer(1f);
+
+        _timer.OnTimerDone += () => UDPComunication.Instance.SendMessage(BuildMessage());
+    }
 
     private void Update()
     {
-        byte[] message = BuildMessage();
-        UDPComunication.Instance.SendMessage(message);
+        // byte[] message = BuildMessage();
+        // UDPComunication.Instance.SendMessage(message);
+
+        _timer.CountTimer();
     }
 
     private byte[] BuildMessage()
     {
         // 1. Find closest ghost
         Transform closest = null;
+
         float minDist = float.MaxValue;
-        foreach (var g in ghosts)
+        foreach (var g in _ghosts)
         {
-            float d = Vector2.Distance(player.position, g.position);
+            if (g.GetComponent<GhostBehaviour>().Class != _channel) continue;
+
+            float d = Vector2.Distance(_player.position, g.position);
             if (d < minDist)
             {
                 minDist = d;
@@ -27,20 +100,25 @@ public class GhostIndicator : MonoBehaviour
             }
         }
 
-        if (closest == null) return new byte[8];
+        if (closest == null) return _arrowLeft;
+
+        Debug.DrawLine(_player.position, closest.position);
 
         // 2. Compute direction vector
-        Vector2 dir = (closest.position - player.position).normalized;
+        Vector3 worldDir = (closest.position - _player.position).normalized;
+        Vector3 dir = _player.InverseTransformDirection(worldDir);
+
+        Debug.Log($"DIRECTION : {dir}");
 
         // 3. Map direction to LED coordinates
-        int px = 3; // player at approx. center (3,3)
+        int px = 3; // _player at approx. center (3,3)
         int py = 3;
         int dx = Mathf.RoundToInt(dir.x * 3.5f);
-        int dy = Mathf.RoundToInt(dir.y * 3.5f);
+        int dy = Mathf.RoundToInt(-dir.z * 3.5f);
         int gx = Mathf.Clamp(px + dx, 0, 7);
         int gy = Mathf.Clamp(py + dy, 0, 7);
 
-        // 4. Fill matrix with a line from player → ghost direction
+        // 4. Fill matrix with a line from _player → ghost direction
         bool[,] matrix = new bool[8, 8];
         DrawLine(px, py, gx, gy, matrix);
 

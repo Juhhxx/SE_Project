@@ -16,7 +16,7 @@ public class PlayerRotation : MonoBehaviour
 
         _timer = new Timer(0.16f);
 
-        _timer.OnTimerDone += Test;
+        // _timer.OnTimerDone += Test;
     }
 
     private void Test()

@@ -14,9 +14,11 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
     Socket _sender;
     IPEndPoint _endpoint;
 
-    private void Start()
+    private void Awake()
     {
         base.SingletonCheck(this);
+
+        CreateSocket();
     }
 
     private void OnEnable()
@@ -30,6 +32,8 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
 
     private async void CreateSocket()
     {
+        if (_sender != null) return;
+
         _adress = Dns.GetHostAddresses(_ipAdress)[0];
 
         _sender = new Socket(_adress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
@@ -53,6 +57,8 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
         _sender.Shutdown(SocketShutdown.Both);
         // Closes the socket
         _sender.Close();
+
+        _sender = null;
     }
 
     public (byte[], int) RecieveMessage()
@@ -87,8 +93,5 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
         // Thread.Sleep(1000);
         // SendMessage(new byte[] { 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 });
         // Thread.Sleep(1000);
-
-        //SendMessage(new byte[] { 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA });
-
     }
 }

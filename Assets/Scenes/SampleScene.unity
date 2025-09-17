@@ -488,6 +488,8 @@ GameObject:
   - component: {fileID: 926902141}
   - component: {fileID: 926902147}
   - component: {fileID: 926902148}
+  - component: {fileID: 926902149}
+  - component: {fileID: 926902150}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -579,13 +581,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 926902140}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &926902146
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -640,6 +642,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db9cba54af18e949bc5d47cae86d5ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &926902149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926902140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d62d4c2ec573aa44868ffeed569315e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 926902144}
+  _ghosts: []
+  _channel: 1
+--- !u!114 &926902150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926902140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8eb408fbe84764eb92b58369568401, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ghostPrefabs:
+  - {fileID: 8568364890420827893, guid: ad62cabec1a6a5c4fb9cc7e63976c56f, type: 3}
+  - {fileID: 8568364890420827893, guid: a651f745abdd301439fc225b362a328e, type: 3}
+  - {fileID: 8568364890420827893, guid: e2da24d003d83d54ea5f6dc18767f738, type: 3}
+  - {fileID: 8568364890420827893, guid: abd2ecbbb1af34a418c86b54cc5a3797, type: 3}
+  _spawningRangeRadius: {x: 25, y: 50}
+  _spawningRangeTime: {x: 3, y: 10}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

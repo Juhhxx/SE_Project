@@ -64,7 +64,7 @@ void processGyroSignal() {
 #define MAX_DEVICES	1
 #define CLK_PIN   18 // or SCK
 #define DATA_PIN  23  // or MOSI
-#define CS_PIN    19  // or SS
+#define CS_PIN    14  // or SS
 
 // SPI hardware interface
 MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
@@ -113,7 +113,7 @@ void initializeUDP() {
       Serial.write(packet.data(), packet.length());
       Serial.println();
 
-      if (packet.length() == 8) {
+      if (packet.length() <= 8) {
           uint8_t bitmap[8];
           memcpy(bitmap, packet.data(), 8);  // copy bytes from UDP packet
           draw(bitmap);                       // call your method

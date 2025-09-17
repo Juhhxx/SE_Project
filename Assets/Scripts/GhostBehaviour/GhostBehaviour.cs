@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Authentication.ExtendedProtection;
 using UnityEngine;
 
-public class StalkerBehaviour : MonoBehaviour
+public class GhostBehaviour : MonoBehaviour
 {
     [SerializeField] bool isDetectable;
     [SerializeField] bool isAudible;
@@ -12,6 +12,8 @@ public class StalkerBehaviour : MonoBehaviour
     [SerializeField] int audioCooldown;
     [SerializeField] private float _speed;
     [SerializeField] private int _class;
+    public int Class => _class;
+
     private GameObject _target;
     private AudioSource audioSource;
     private Timer timer;
@@ -23,8 +25,6 @@ public class StalkerBehaviour : MonoBehaviour
         _target = FindFirstObjectByType<GameManager>().gameObject;
 
         transform.LookAt(_target.transform);
-
-
 
         if (isAudible)
         {
@@ -86,12 +86,21 @@ public class StalkerBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == _target) KillPlayer();
+        if (other.gameObject == _target)
+        {
+            KillPlayer();
+            Destroy(gameObject);
+        }
     }
 
     private void KillPlayer()
     {
         //Mandar sinais para o mootor pa vibrar de acordo
         //Play audio clip do narrador ?
+    }
+
+    private void OnDestroy()
+    {
+        GhostIndicator.Instance.RemoveGhost(transform);
     }
 }
