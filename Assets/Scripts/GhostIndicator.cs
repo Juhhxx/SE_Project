@@ -59,30 +59,12 @@ public class GhostIndicator : MonoBehaviourSingleton<GhostIndicator>
         0b00000000
     };
 
-    Timer _timer;
-
     private void Awake()
     {
         base.SingletonCheck(this);
     }
-    private void Start()
-    {
-        // UDPComunication.Instance.SendMessage(_arrowUp);
 
-        _timer = new Timer(1f);
-
-        _timer.OnTimerDone += () => UDPComunication.Instance.SendMessage(BuildMessage());
-    }
-
-    private void Update()
-    {
-        // byte[] message = BuildMessage();
-        // UDPComunication.Instance.SendMessage(message);
-
-        _timer.CountTimer();
-    }
-
-    private byte[] BuildMessage()
+    public byte[] DrawRadar()
     {
         // 1. Find closest ghost
         Transform closest = null;

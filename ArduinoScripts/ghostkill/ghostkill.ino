@@ -119,7 +119,7 @@ void initializeUDP() {
           draw(bitmap);                       // call your method
       }
       //reply to the client
-     uint8_t response[2] = { processedgZ, directRot };
+     uint8_t response[4] = { processedgZ, directRot, 0, 0 };
       
       packet.write(response, sizeof(response));
     });

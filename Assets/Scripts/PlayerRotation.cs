@@ -5,7 +5,6 @@ using System.Linq;
 public class PlayerRotation : MonoBehaviour
 {
     private Rigidbody _rb;
-    private Timer _timer;
     private Queue<int> _rotValues;
 
     private void Start()
@@ -13,31 +12,17 @@ public class PlayerRotation : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
 
         _rotValues = new Queue<int>();
-
-        _timer = new Timer(0.16f);
-
-        // _timer.OnTimerDone += Test;
     }
 
-    private void Test()
+    public void SendRotation(byte rot, byte dir)
     {
         Debug.Log("AAAA");
 
-        (byte[] bytes, int size) = UDPComunication.Instance.SendMessage(new byte[] { 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA });
+        // (byte[] bytes, int size) = UDPComunication.Instance.SendMessage(new byte[] { 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA });
 
-        int rot = bytes[0];
+        int r = rot;
 
-        if (bytes[1] == 0) rot = -rot;
-
-        Debug.LogWarning($"ANGLE : {rot}");
-
-        string list = "ANGLES : {";
-
-        foreach (int r in _rotValues) list += $" {r} ";
-
-        list += "}";
-
-        Debug.LogWarning(list);
+        if (dir == 0) r = -r;
 
         AddRotation(rot);
     }
@@ -51,6 +36,17 @@ public class PlayerRotation : MonoBehaviour
             _rotValues.Dequeue();
             ApplyRotationForce(DoMedian());
         }
+
+        Debug.LogWarning($"ANGLE : {rot}");
+
+        string list = "ANGLES : {";
+
+        foreach (int r in _rotValues) list += $" {r} ";
+
+        list += "}";
+
+        Debug.LogWarning(list);
+
     }
 
     private int DoMedian()
@@ -70,11 +66,5 @@ public class PlayerRotation : MonoBehaviour
 
         _rb.MoveRotation(Quaternion.Euler(finalRot));
     }
-
-    private void Update()
-    {
-        _timer.CountTimer();
-    }
-
 
 }

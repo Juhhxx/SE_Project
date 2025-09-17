@@ -7,7 +7,6 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField][Range(0, 180)] private int _cameraDistance;
     [SerializeField] private int _numberOfRaycasts;
 
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) Flash();
