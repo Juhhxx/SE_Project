@@ -72,7 +72,10 @@ public class GhostIndicator : MonoBehaviourSingleton<GhostIndicator>
         float minDist = float.MaxValue;
         foreach (var g in _ghosts)
         {
-            if (g.GetComponent<GhostBehaviour>().Class != _channel) continue;
+            GhostBehaviour gB = g.GetComponent<GhostBehaviour>();
+
+            if (!gB.IsDetectable) continue;
+            if (gB.Class != _channel) continue;
 
             float d = Vector2.Distance(_player.position, g.position);
             if (d < minDist)
@@ -82,7 +85,7 @@ public class GhostIndicator : MonoBehaviourSingleton<GhostIndicator>
             }
         }
 
-        if (closest == null) return _arrowLeft;
+        if (closest == null) return new byte[] {0,0,0,0b00001000,0,0,0,0};
 
         Debug.DrawLine(_player.position, closest.position);
 

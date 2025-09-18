@@ -18,8 +18,6 @@ public class PlayerRotation : MonoBehaviour
     {
         Debug.Log("AAAA");
 
-        // (byte[] bytes, int size) = UDPComunication.Instance.SendMessage(new byte[] { 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA });
-
         int r = rot;
 
         if (dir == 0) r = -r;

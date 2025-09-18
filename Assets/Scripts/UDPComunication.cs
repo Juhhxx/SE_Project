@@ -8,17 +8,15 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
 {
     [SerializeField] private string _ipAdress;
     [SerializeField] private int _port;
-    [SerializeField] private float _updateRate;
 
     IPAddress _adress;
     Socket _sender;
+    UdpClient _udp;
     IPEndPoint _endpoint;
 
     private void Awake()
     {
         base.SingletonCheck(this);
-
-        CreateSocket();
     }
 
     private void OnEnable()
@@ -32,17 +30,19 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
 
     private async void CreateSocket()
     {
-        if (_sender != null) return;
-
-        _adress = Dns.GetHostAddresses(_ipAdress)[0];
+        // _adress = Dns.GetHostAddresses(_ipAdress)[0];
+        _adress = IPAddress.Parse(_ipAdress);
 
         _sender = new Socket(_adress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+        _sender.Blocking = false;
 
         _endpoint = new IPEndPoint(_adress, _port);
 
         try
         {
             await _sender.ConnectAsync(_endpoint);
+
+            Debug.LogWarning("CONNECTED");
         }
         catch (SocketException e)
         {
@@ -63,10 +63,16 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
 
     public (byte[], int) RecieveMessage()
     {
-        byte[] bytes = new byte[8 * 1024 * 1024];
+        byte[] bytes = new byte[4];
         int bytesRec = _sender.Receive(bytes);
 
-        Debug.Log($"Recived Message : {bytes}");
+        string msg = "MESSAGE RECIEVED : {";
+
+        foreach (byte b in bytes) msg += $" {b} ";
+
+        msg += "}";
+
+        Debug.LogWarning(msg);
 
         return (bytes, bytesRec);
     }
@@ -76,6 +82,14 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
         {
             int bytesSent = _sender.Send(message);
 
+            string msg = "MESSAGE SENT : {";
+
+            foreach (byte b in message) msg += $" {b} ";
+
+            msg += "}";
+
+            Debug.LogWarning(msg);
+
             return RecieveMessage();
         }
         catch (SocketException e)
@@ -83,15 +97,7 @@ public class UDPComunication : MonoBehaviourSingleton<UDPComunication>
             // In case of error, just write it
             Debug.Log($"SocketException : {e}");
 
-            return (default, default);
+            return (new byte[4] {0,0,0,0}, default);
         }
-    }
-   
-    private void Update()
-    {
-        // SendMessage(new byte[] { 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA });
-        // Thread.Sleep(1000);
-        // SendMessage(new byte[] { 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 });
-        // Thread.Sleep(1000);
     }
 }

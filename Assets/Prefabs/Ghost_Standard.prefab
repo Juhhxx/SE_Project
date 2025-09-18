@@ -121,10 +121,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6faee5722756cdb40a2b8a35fc90ce50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDetectable: 0
+  isDetectable: 1
   isAudible: 0
   audioClips: []
   audioPlayProb: 0
   audioCooldown: 0
   _speed: 0.5
-  _class: 1
+  _class: 0

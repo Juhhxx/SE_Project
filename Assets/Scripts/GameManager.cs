@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     private Timer _timer;
 
-    private void Start()
+    private void Awake()
     {
         _timer = new Timer(_updateRate);
 
@@ -37,6 +37,11 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         _timer.OnTimerDone -= UpdateGame;
+    }
+
+    private void Update()
+    {
+        _timer.CountTimer();
     }
 
     private void UpdateGame()
@@ -66,17 +71,17 @@ public class GameManager : MonoBehaviour
         **                                                                    **
         **  The 3rd byte represents if the player has pressed the Flash.      **
         **                                                                    **
-        **  The 4rth byte represents the channel to player is tuned into.     **
+        **  The 4th byte represents the channel to player is tuned into.      **
         **                                                                    **
         ***********************************************************************/
 
-        (byte[] response, _) = UDPComunication.Instance.SendMessage(message.ToArray());
+        (byte[] response, int size) = UDPComunication.Instance.SendMessage(radar);
 
         _playerRot.SendRotation(response[0], response[1]);
 
-        if (response?[3] == 1) _playerCam.Flash();
+        if (response[2] == 1) _playerCam.Flash();
 
-        GhostIndicator.Instance.SetChannel(response[4]);
+        GhostIndicator.Instance.SetChannel(response[3]);
     }
 
     private IEnumerator SpawnGhosts()
@@ -103,11 +108,14 @@ public class GameManager : MonoBehaviour
 
     private Vector3 ChooseLocation()
     {
-        Vector3 dir = Random.insideUnitCircle;
+        float minR = _spawningRangeRadius.x;
+        float maxR = _spawningRangeRadius.y;
+
+        Vector3 dir = Random.insideUnitCircle.normalized;
         dir.z = dir.y;
         dir.y = 0;
 
-        float dist = _spawningRangeRadius.x + Random.Range(0, _spawningRangeRadius.y - _spawningRangeRadius.x);
+        float dist = Mathf.Sqrt(Random.Range(minR * minR, maxR * maxR));
 
         return dir * dist;
     }

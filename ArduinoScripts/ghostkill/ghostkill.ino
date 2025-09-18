@@ -73,7 +73,7 @@ WiFiServer server(80);
 
 AsyncUDP udp;
 
-const char *ssid = "ESP32_GHOST_2";
+const char *ssid = "ESP32_GHOST";
 const char *password = "12345678";
 
 void startServer() {
@@ -113,15 +113,19 @@ void initializeUDP() {
       Serial.write(packet.data(), packet.length());
       Serial.println();
 
-      if (packet.length() <= 8) {
+      //reply to the client
+      uint8_t response[4] = { processedgZ, directRot, 0, 0 };
+      
+      int result = packet.write(response, sizeof(response));
+
+      Serial.print("Reply sent, bytes: ");
+      Serial.println(result);
+
+      if (packet.length() >= 8) {
           uint8_t bitmap[8];
           memcpy(bitmap, packet.data(), 8);  // copy bytes from UDP packet
           draw(bitmap);                       // call your method
       }
-      //reply to the client
-     uint8_t response[4] = { processedgZ, directRot, 0, 0 };
-      
-      packet.write(response, sizeof(response));
     });
   }
 }
@@ -138,7 +142,7 @@ void draw(uint8_t bitmap[8]) {
 void setup() {
 
   Serial.begin(115200);
-  delay(1000);
+  delay(5000);
 
   Serial.println("start");
 

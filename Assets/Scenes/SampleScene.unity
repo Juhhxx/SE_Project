@@ -408,7 +408,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ipAdress: 192.168.4.1
   _port: 1234
-  _updateRate: 0
 --- !u!4 &777814424
 Transform:
   m_ObjectHideFlags: 0
@@ -656,7 +655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _player: {fileID: 926902144}
   _ghosts: []
-  _channel: 1
+  _channel: 0
 --- !u!114 &926902150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -669,6 +668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b8eb408fbe84764eb92b58369568401, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _updateRate: 0.5
   _ghostPrefabs:
   - {fileID: 8568364890420827893, guid: ad62cabec1a6a5c4fb9cc7e63976c56f, type: 3}
   - {fileID: 8568364890420827893, guid: a651f745abdd301439fc225b362a328e, type: 3}

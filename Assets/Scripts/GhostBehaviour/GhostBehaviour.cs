@@ -6,6 +6,7 @@ using UnityEngine;
 public class GhostBehaviour : MonoBehaviour
 {
     [SerializeField] bool isDetectable;
+    public bool IsDetectable => isDetectable;
     [SerializeField] bool isAudible;
     [SerializeField] List<AudioClip> audioClips;
     [SerializeField] int audioPlayProb;
